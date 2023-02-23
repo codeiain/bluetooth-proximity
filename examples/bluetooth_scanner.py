@@ -6,7 +6,7 @@ import threading
 import sys
 
 # List of bluetooth addresses to scan
-BT_ADDR_LIST = ['28:8F:F6:DF:A8:58']
+BT_ADDR_LIST = ['B8:27:EB:D2:06:F5', 'D4:9D:C0:7F:B4:7D', '28:8F:F6:DF:A8:58', 'B8:27:EB:64:D2:16']
 DAILY = True  # Set to True to invoke callback only once per day per address
 DEBUG = True  # Set to True to print out debug messages
 THRESHOLD = (-10, 10)
@@ -45,11 +45,30 @@ def bluetooth_listen(
     @type: debug: bool
     """
 
-    datapoints = []
+    datapoints = [
+        {
+            name: BT_ADDR_LIST[0],
+            range: []
+        },
+        {
+            name: BT_ADDR_LIST[1],
+            range: []
+        },
+        {
+            name: BT_ADDR_LIST[2],
+            range: []
+        },
+        {
+            name: BT_ADDR_LIST[3],
+            range: []
+        }
+    ]
     b = BluetoothRSSI(addr=addr)
     while True:
         rssi = b.request_rssi()
-        datapoints.append(rssi[0])
+        datapoints[addr].range.append(rssi[0])
+
+        print(datapoints)
 
         if debug:
             print("addr: {}, rssi: {}".format(addr, rssi))
