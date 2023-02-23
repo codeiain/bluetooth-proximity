@@ -45,11 +45,30 @@ def bluetooth_listen(
     @type: debug: bool
     """
 
-    datapoints = []
+    datapoints = [
+        {
+            name: BT_ADDR_LIST[0],
+            range: []
+        },
+        {
+            name: BT_ADDR_LIST[1],
+            range: []
+        },
+        {
+            name: BT_ADDR_LIST[2],
+            range: []
+        },
+        {
+            name: BT_ADDR_LIST[3],
+            range: []
+        }
+    ]
     b = BluetoothRSSI(addr=addr)
     while True:
         rssi = b.request_rssi()
-        datapoints.append(rssi[0])
+        datapoints[addr].range.append(rssi[0])
+
+        print(datapoints)
 
         if debug:
             print("addr: {}, rssi: {}".format(addr, rssi))
