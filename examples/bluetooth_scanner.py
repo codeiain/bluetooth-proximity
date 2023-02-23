@@ -53,7 +53,7 @@ def bluetooth_listen(
 
         if debug:
             print("addr: {}, rssi: {}".format(addr, rssi))
-            print("average rssi {}".format(average(datapoints)))
+            print("average rssi {}".format(round(average(datapoints))))
             print("{}".format(datapoints))
         # Sleep and then skip to next iteration if device not found
         if rssi is None:
