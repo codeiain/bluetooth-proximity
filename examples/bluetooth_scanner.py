@@ -53,7 +53,7 @@ def bluetooth_listen(
             time.sleep(sleep)
             continue
         # Trigger if RSSI value is within threshold
-        if threshold[0] < rssi < threshold[1]:
+        if int(threshold[0]) < rssi < int(threshold[1]):
             callback()
             if daily:
                 # Calculate the time remaining until next day
