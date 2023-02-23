@@ -19,6 +19,15 @@ def dummy_callback():
 def average(lst):
     return sum(lst) / len(lst)
 
+def normalize(arr, t_min, t_max):
+    norm_arr = []
+    diff = t_max - t_min
+    diff_arr = max(arr) - min(arr)   
+    for i in arr:
+        temp = (((i - min(arr))*diff)/diff_arr) + t_min
+        norm_arr.append(temp)
+    return norm_arr
+
 def bluetooth_listen(
         addr, threshold, callback, sleep=1, daily=True, debug=False):
     """Scans for RSSI value of bluetooth address in a loop. When the value is
@@ -55,6 +64,8 @@ def bluetooth_listen(
             print("addr: {}, rssi: {}".format(addr, rssi))
             print("average rssi {}".format(round(average(datapoints))))
             print("{}".format(datapoints))
+            print("{}".format(normalize(datapoints, -10, 0)))
+            #normalize(datapoints, -1, 1)
         # Sleep and then skip to next iteration if device not found
         if rssi is None:
             time.sleep(sleep)
