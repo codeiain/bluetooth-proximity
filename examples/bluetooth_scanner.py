@@ -14,8 +14,10 @@ SLEEP = 1
 
 
 def dummy_callback():
-    print("Dummy callback function invoked")
+    pass
 
+def average(lst):
+    return sum(lst) / len(lst)
 
 def bluetooth_listen(
         addr, threshold, callback, sleep=1, daily=True, debug=False):
@@ -42,18 +44,21 @@ def bluetooth_listen(
                    actually sleep until tomorrow if `daily` is True.
     @type: debug: bool
     """
+
+    datapoints = []
     b = BluetoothRSSI(addr=addr)
     while True:
         rssi = b.request_rssi()
+        datapoints.append(rssi[0])
+
         if debug:
-            print("---")
             print("addr: {}, rssi: {}".format(addr, rssi))
+            print("average rssi {}".format(average(datapoints)))
         # Sleep and then skip to next iteration if device not found
         if rssi is None:
             time.sleep(sleep)
             continue
         # Trigger if RSSI value is within threshold
-        print(rssi)
         if int(threshold[0]) < rssi[0] < int(threshold[1]):
             callback()
             if daily:
