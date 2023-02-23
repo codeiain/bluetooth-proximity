@@ -44,31 +44,17 @@ def bluetooth_listen(
                    actually sleep until tomorrow if `daily` is True.
     @type: debug: bool
     """
+    datapoints = {}
+    for i in range (0, len(BT_ADDR_LIST)):
+        datapoints[BT_ADDR_LIST[i]] = []
 
-    datapoints = [
-        {
-            name: BT_ADDR_LIST[0],
-            range: []
-        },
-        {
-            name: BT_ADDR_LIST[1],
-            range: []
-        },
-        {
-            name: BT_ADDR_LIST[2],
-            range: []
-        },
-        {
-            name: BT_ADDR_LIST[3],
-            range: []
-        }
-    ]
     b = BluetoothRSSI(addr=addr)
     while True:
         rssi = b.request_rssi()
-        datapoints[addr].range.append(rssi[0])
+        dst = 10 **((-69 - rssi[0]) /(10 *2))
+        datapoints[addr].append(dst)
 
-        print(datapoints)
+        print(dst)
 
         if debug:
             print("addr: {}, rssi: {}".format(addr, rssi))
@@ -77,22 +63,6 @@ def bluetooth_listen(
         if rssi is None:
             time.sleep(sleep)
             continue
-        # Trigger if RSSI value is within threshold
-        if int(threshold[0]) < rssi[0] < int(threshold[1]):
-            callback()
-            if daily:
-                # Calculate the time remaining until next day
-                now = datetime.datetime.now()
-                tomorrow = datetime.datetime(
-                    now.year, now.month, now.day, 0, 0, 0, 0) + \
-                    datetime.timedelta(days=1)
-                until_tomorrow = (tomorrow - now).seconds
-                if debug:
-                    print("Seconds until tomorrow: {}".format(until_tomorrow))
-                else:
-                    time.sleep(until_tomorrow)
-        # Delay between iterations
-        time.sleep(sleep)
 
 
 def start_thread(addr, callback, threshold=THRESHOLD, sleep=SLEEP,
